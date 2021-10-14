@@ -1,9 +1,12 @@
 package com.plcoding.jetpackcomposepokedex.data.network
 
+import android.accounts.NetworkErrorException
 import android.content.Context
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import androidx.core.content.ContextCompat
+import com.plcoding.jetpackcomposepokedex.data.network.models.Pokemon
+import com.plcoding.jetpackcomposepokedex.utils.network.Resource
 
 class NetworkHandler(
     private val context: Context

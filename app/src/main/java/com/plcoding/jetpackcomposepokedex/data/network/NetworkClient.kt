@@ -9,12 +9,12 @@ import io.ktor.client.features.logging.Logging
 import io.ktor.client.features.logging.Logger
 import io.ktor.client.features.logging.LogLevel
 import io.ktor.client.features.observer.ResponseObserver
-import io.ktor.client.request.header
-import io.ktor.http.ContentType
-import io.ktor.http.HttpHeaders
+import io.ktor.client.request.*
+import io.ktor.http.*
 import timber.log.Timber
 
 private const val TIME_OUT = 60_000
+private const val BASE_URL = "pokeapi.co/api/v2"
 
 fun createKtor(): HttpClient {
     return ktorHttpClient
@@ -52,6 +52,10 @@ private val ktorHttpClient = HttpClient(Android) {
     }
 
     install(DefaultRequest) {
+        host = BASE_URL
+        url {
+            protocol = URLProtocol.HTTPS
+        }
         header(HttpHeaders.ContentType, ContentType.Application.Json)
     }
 }

@@ -1,15 +1,19 @@
 package com.plcoding.jetpackcomposepokedex.data.network
 
-import com.plcoding.jetpackcomposepokedex.data.network.response.PokemonList
+import com.plcoding.jetpackcomposepokedex.data.network.models.Pokemon
+import com.plcoding.jetpackcomposepokedex.data.network.models.PokemonList
 import io.ktor.client.HttpClient
-import io.ktor.client.request.get
-
-private const val BASE_URL = "https://pokeapi.co/api/v2"
+import io.ktor.client.request.*
 
 class PokemonApi(private val client: HttpClient) {
-    suspend fun getPokemonList(): PokemonList = client.get("$BASE_URL/pokemon")
+    suspend fun getPokemonList(
+        offset: Int, limit: Int
+    ): PokemonList = client.get("pokemon") {
+        parameter("offset", offset)
+        parameter("limit", limit)
+    }
 
-    suspend fun getPokemon(name: String): PokemonList = client.get("$BASE_URL/pokemon/$name")
+    suspend fun getPokemon(name: String): Pokemon = client.get("pokemon/$name")
 
 //    suspend fun getPokemon(user: UserEntity) {
 //        client.post<UserEntity>("$END_POINT_POST_USER_KTOR") {

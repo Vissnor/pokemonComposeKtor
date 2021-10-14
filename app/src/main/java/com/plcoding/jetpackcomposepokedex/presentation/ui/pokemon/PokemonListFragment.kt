@@ -30,9 +30,8 @@ class PokemonListFragment : Fragment() {
             )
             setContent {
                 JetpackComposePokedexTheme(darkTheme = true) {
-                    PokemonListContent(
+                    PokemonListScreen(
                         viewModel = getViewModel(),
-                        rootNavController = findRootNavController(),
                         navController = findNavController()
                     )
                 }

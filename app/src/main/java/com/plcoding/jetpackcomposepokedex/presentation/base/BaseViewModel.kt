@@ -4,6 +4,7 @@ import androidx.compose.runtime.MutableState
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.plcoding.jetpackcomposepokedex.utils.base.SingleEventWithContent
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
@@ -11,8 +12,11 @@ abstract class BaseViewModel : ViewModel() {
 
     val errorEvent = SingleEventWithContent<Exception>()
 
-    fun runAsync(isLoading: MutableState<Boolean>? = null, tryFunction: suspend () -> Unit) {
-        viewModelScope.launch {
+    fun runAsync(
+        isLoading: MutableState<Boolean>? = null,
+        tryFunction: suspend () -> Unit
+    ) {
+        viewModelScope.launch(Dispatchers.IO) {
             try {
                 isLoading?.value = true
                 tryFunction()
@@ -24,5 +28,4 @@ abstract class BaseViewModel : ViewModel() {
             }
         }
     }
-
 }

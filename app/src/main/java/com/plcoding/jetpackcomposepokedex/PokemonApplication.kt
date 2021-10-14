@@ -7,6 +7,7 @@ import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.startKoin
 import timber.log.Timber
 
+@Suppress("unused")
 class PokemonApplication : Application() {
 
     companion object {
