@@ -9,5 +9,21 @@
         android:id="@+id/pokemonListFragment"
         android:name="com.plcoding.jetpackcomposepokedex.presentation.ui.pokemon.PokemonListFragment"
         android:label="fragment_pokemon_list"
-        tools:layout="@layout/fragment_pokemon_list" />
+        tools:layout="@layout/fragment_pokemon_list" >
+        <action
+            android:id="@+id/action_pokemonListFragment_to_pokemonDetailedFragment"
+            app:destination="@id/pokemonDetailedFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/pokemonDetailedFragment"
+        android:name="com.plcoding.jetpackcomposepokedex.presentation.ui.pokemon.detailed.PokemonDetailedFragment"
+        android:label="fragment_pokemon_detailed"
+        tools:layout="@layout/fragment_pokemon_detailed">
+        <argument
+            android:name="pokemonName"
+            app:argType="string" />
+        <argument
+            android:name="dominantColor"
+            app:argType="integer" />
+    </fragment>
 </navigation>

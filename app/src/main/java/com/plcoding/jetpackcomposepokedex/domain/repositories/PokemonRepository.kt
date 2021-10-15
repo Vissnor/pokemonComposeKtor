@@ -1,6 +1,8 @@
 package com.plcoding.jetpackcomposepokedex.domain.repositories
 
 import android.accounts.NetworkErrorException
+import androidx.compose.ui.text.intl.Locale
+import androidx.compose.ui.text.toLowerCase
 import com.plcoding.jetpackcomposepokedex.data.network.NetworkHandler
 import com.plcoding.jetpackcomposepokedex.data.network.PokemonApi
 import com.plcoding.jetpackcomposepokedex.data.network.models.Pokemon
@@ -22,12 +24,12 @@ class PokemonRepository(
         }
     }
 
-    suspend fun getPokemon(name: String) : Resource<Pokemon> {
+    suspend fun getPokemonInfo(name: String) : Resource<Pokemon> {
         if(!networkHandler.isConnected)
             return Resource.Error(NetworkErrorException().message?: "Not connected")
 
         return try {
-            Resource.Success(pokemonApi.getPokemon(name))
+            Resource.Success(pokemonApi.getPokemon(name.toLowerCase(Locale("en"))))
         } catch(e: Exception) {
             Resource.Error(e.message?: "Unknown error")
         }

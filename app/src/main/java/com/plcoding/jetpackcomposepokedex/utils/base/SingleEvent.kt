@@ -4,10 +4,13 @@ import android.annotation.SuppressLint
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.platform.LocalLifecycleOwner
+import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.flowWithLifecycle
+import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
 
 /**
  * A class built for sending single shot events from a ViewModel. This class is an alternative
@@ -42,4 +45,11 @@ open class SingleEventWithContent<T> {
         }
     }
 
+    fun collect(viewLifecycleOwner: LifecycleOwner, onEvent: (T) -> Unit) {
+        viewLifecycleOwner.lifecycleScope.launch {
+            flow.flowWithLifecycle(viewLifecycleOwner.lifecycle).collect {
+                onEvent(it)
+            }
+        }
+    }
 }

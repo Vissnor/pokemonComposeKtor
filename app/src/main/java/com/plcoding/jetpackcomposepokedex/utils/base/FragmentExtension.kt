@@ -1,8 +1,6 @@
 package com.plcoding.jetpackcomposepokedex.utils.base
 
-import android.content.Context
 import android.view.WindowManager
-import android.view.inputmethod.InputMethodManager
 import androidx.annotation.ColorRes
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
@@ -11,18 +9,6 @@ import androidx.navigation.NavOptions
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import com.plcoding.jetpackcomposepokedex.R
-
-fun Fragment.showKeyboard() {
-    val imm = context?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-    imm.toggleSoftInput(InputMethodManager.SHOW_IMPLICIT, 0)
-}
-
-fun Fragment.hideKeyboard() {
-    this@hideKeyboard.activity?.let { activity ->
-        val imm = activity.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-        imm.hideSoftInputFromWindow(this@hideKeyboard.view?.windowToken, 0)
-    }
-}
 
 fun Fragment.findRootNavController() = requireActivity().findNavController(R.id.main_host_fragment)
 

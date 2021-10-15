@@ -12,25 +12,24 @@ import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment.Companion.Center
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.scale
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import coil.compose.LocalImageLoader
+import coil.annotation.ExperimentalCoilApi
+import coil.compose.ImagePainter
 import coil.compose.rememberImagePainter
 import com.plcoding.jetpackcomposepokedex.R
 import com.plcoding.jetpackcomposepokedex.domain.models.PokedexListEntry
@@ -129,6 +128,7 @@ fun PokemonList(
     }
 }
 
+@ExperimentalCoilApi
 @Composable
 fun PokedexEntry(
     entry: PokedexListEntry,
@@ -147,35 +147,32 @@ fun PokedexEntry(
             .shadow(5.dp, RoundedCornerShape(10.dp))
             .clip(RoundedCornerShape(10.dp))
             .aspectRatio(1f)
-            .background(
-                Brush.verticalGradient(
-                    listOf(
-                        dominantColor,
-                        defaultDominantColor
-                    )
-                )
-            )
-            .clickable { }
+            .background(Brush.verticalGradient(listOf(dominantColor, defaultDominantColor)))
+            .clickable {
+                entry.pokemonName
+                viewModel.onItemClicked(entry.pokemonName, dominantColor.toArgb())
+            }
     ) {
         Column {
-            Image(
-                painter = rememberImagePainter(
-                    data = entry.imageUrl,
-                    imageLoader = LocalImageLoader.current,
+            val painter = rememberImagePainter(data = entry.imageUrl)
 
-                    builder = {
-                        this.crossfade(true)
-                    }
-                ),
+            Image(
+                painter = painter,
                 contentDescription = entry.pokemonName,
                 modifier = Modifier
                     .size(120.dp)
                     .align(CenterHorizontally)
             )
-//            CircularProgressIndicator(
-//                color = MaterialTheme.colors.primary,
-//                modifier = Modifier.scale(0.5f)
-//            )
+
+            CircularProgressIndication(activated = (painter.state is ImagePainter.State.Loading))
+
+            if(painter.state is ImagePainter.State.Success) {
+                LaunchedEffect(key1 = painter) {
+                    val image = painter.imageLoader.execute(painter.request).drawable
+                    viewModel.calcDominantColor(image!!) { dominantColor = it }
+                }
+            }
+
             Text(
                 text = entry.pokemonName,
                 fontFamily = RobotoCondensed,
@@ -188,6 +185,24 @@ fun PokedexEntry(
 }
 
 @Composable
+fun CircularProgressIndication(activated: Boolean) {
+    if(activated) {
+        Column (
+            modifier = Modifier.fillMaxSize(),
+            horizontalAlignment = CenterHorizontally,
+            verticalArrangement = Arrangement.Center
+        ) {
+            CircularProgressIndicator(
+                color = MaterialTheme.colors.background,
+                modifier = Modifier.size(60.dp)
+            )
+        }
+    }
+}
+
+
+@ExperimentalCoilApi
+@Composable
 fun PokedexRow(
     rowIndex: Int,
     entries: List<PokedexListEntry>,
@@ -199,14 +214,16 @@ fun PokedexRow(
             PokedexEntry(
                 entry = entries[rowIndex * 2],
                 navController = navController,
-                viewModel = viewModel
+                viewModel = viewModel,
+                modifier = Modifier.weight(1f)
             )
             Spacer(modifier = Modifier.width(16.dp))
             if(entries.size >= rowIndex * 2 + 2) {
                 PokedexEntry(
                     entry = entries[rowIndex * 2 + 1],
                     navController = navController,
-                    viewModel = viewModel
+                    viewModel = viewModel,
+                    modifier = Modifier.weight(1f)
                 )
             } else {
                 Spacer(modifier = Modifier.weight(1f))

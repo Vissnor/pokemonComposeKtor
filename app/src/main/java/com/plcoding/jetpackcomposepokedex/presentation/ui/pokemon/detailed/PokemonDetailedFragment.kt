@@ -1,4 +1,4 @@
-package com.plcoding.jetpackcomposepokedex.presentation.ui.pokemon
+package com.plcoding.jetpackcomposepokedex.presentation.ui.pokemon.detailed
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -7,16 +7,15 @@ import android.view.ViewGroup
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.fragment.app.Fragment
-import androidx.navigation.findNavController
-import com.plcoding.jetpackcomposepokedex.presentation.ui.pokemon.detailed.PokemonDetailedViewModel
+import androidx.navigation.fragment.navArgs
 import com.plcoding.jetpackcomposepokedex.presentation.ui.theme.JetpackComposePokedexTheme
 import com.plcoding.jetpackcomposepokedex.utils.base.navController
-import org.koin.androidx.compose.getViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 
-class PokemonListFragment : Fragment() {
-    private val viewModel: PokemonListViewModel by viewModel()
+class PokemonDetailedFragment : Fragment() {
+    private val args: PokemonDetailedFragmentArgs by navArgs()
+    private val viewModel: PokemonDetailedViewModel by viewModel { parametersOf(args)}
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -29,25 +28,12 @@ class PokemonListFragment : Fragment() {
             )
             setContent {
                 JetpackComposePokedexTheme(darkTheme = false) {
-                    PokemonListScreen(
-                        viewModel = getViewModel(),
-                        navController = findNavController()
+                    PokemonDetailedScreen(
+                        viewModel = viewModel,
+                        navController = navController
                     )
                 }
             }
-        }
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
-        viewModel.navigateToDetail.collect(viewLifecycleOwner) {
-            navController.navigate(
-                PokemonListFragmentDirections.actionPokemonListFragmentToPokemonDetailedFragment(
-                    it.first,
-                    it.second
-                )
-            )
         }
     }
 }
